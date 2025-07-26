@@ -1,4 +1,5 @@
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_cors::Cors;
 use base64::{prelude::BASE64_STANDARD, Engine};
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
@@ -61,9 +62,13 @@ async fn main() -> std::io::Result<()> {
         captchas: Arc::new(Mutex::new(captchas))
     });
 
+
     HttpServer::new({
         move || {
+            let cors = Cors::default().allow_any_origin().send_wildcard();
+
             App::new()
+                .wrap(cors)
                 .app_data(captcha_data.clone())
                 .service(get_challenge)
                 .service(resolve_challenge)
