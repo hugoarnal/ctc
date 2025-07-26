@@ -19,6 +19,7 @@ const COLORS = [
 var captcha;
 var spawned_fruits = [];
 var caught_fruits = [];
+var pad;
 
 const ctx = canvas.getContext("2d");
 
@@ -30,6 +31,7 @@ class Fruit {
         this.y = (i * -20) - this.radius;
         this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
         this.letter = letter;
+        this.speed = Math.random();
     }
 
     draw() {
@@ -42,7 +44,32 @@ class Fruit {
     }
 
     update() {
-        this.y += 1;
+        this.y += this.speed;
+    }
+}
+
+class Pad {
+    constructor() {
+        this.width = 50;
+        this.height = 10;
+        this.x = WIDTH / 2 - (this.width / 2);
+        this.y = HEIGHT - 50;
+        this.color = "black";
+        this.speed = 10;
+
+        canvas.addEventListener("keydown", (e) => {
+            if (e.code == "ArrowLeft") {
+                this.x -= this.speed;
+            }
+            if (e.code == "ArrowRight") {
+                this.x += this.speed;
+            }
+        });
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -63,6 +90,8 @@ function update() {
     ctx.textAlign = "right"
     ctx.fillText(`${caught_fruits.length}/${CAPTCHA_SIZE}`, WIDTH, FONT_SIZE);
 
+    pad.draw();
+
     for (let i = 0; i < spawned_fruits.length; i++) {
         spawned_fruits[i].draw();
         spawned_fruits[i].update();
@@ -77,6 +106,7 @@ async function main() {
     const res = await req.json();
 
     captcha = atob(res["captcha"]);
+    pad = new Pad();
 
     create_fruits(captcha);
     requestAnimationFrame(update);
