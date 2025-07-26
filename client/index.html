@@ -22,11 +22,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 10px;
         }
         #submit {
             width: 100px;
         }
+        canvas {
+            border: 2px black solid;
+        }
     </style>
+    <script src="script.js" defer></script>
 </head>
 <body>
     <main>
@@ -34,8 +39,8 @@
         <form>
             <input type="text" placeholder="Username"/>
             <input type="password"/>
-            <canvas id="ctc-captcha"></canvas>
-            <button id="submit" disabled="true"></button>
+            <canvas id="ctc-captcha" width="500" height="250"></canvas>
+            <button id="submit" disabled="true">Submit</button>
         </form>
     </main>
 </body>
