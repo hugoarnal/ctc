@@ -66,7 +66,7 @@ function update() {
     for (let i = 0; i < spawned_fruits.length; i++) {
         spawned_fruits[i].draw();
         spawned_fruits[i].update();
-    });
+    };
     setTimeout(() => {
         requestAnimationFrame(update);
     }, 20);
