@@ -16,6 +16,14 @@ const COLORS = [
     "pink"
 ];
 
+const TEXT_COLOR = {
+    "red": "white",
+    "blue": "white",
+    "purple": "white",
+    "yellow": "black",
+    "pink": "black",
+};
+
 var captcha;
 var spawned_fruits = [];
 var caught_fruits = [];
@@ -41,6 +49,10 @@ class Fruit {
         ctx.fillStyle = this.color;
         ctx.fill();
         ctx.stroke();
+        ctx.fillStyle = TEXT_COLOR[this.color];
+        ctx.font = `15px serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(`${this.letter}`, this.x, this.y + 5);
         ctx.fillStyle = "black";
     }
 
