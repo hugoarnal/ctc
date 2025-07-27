@@ -24,6 +24,7 @@ const TEXT_COLOR = {
     "pink": "black",
 };
 
+var id;
 var captcha;
 var spawned_fruits = [];
 var caught_fruits = [];
@@ -102,8 +103,47 @@ function get_caught_captcha() {
     return caught_captcha;
 }
 
-function send_request() {
-    console.log("todo");
+function complete() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = `${FONT_SIZE}px serif`;
+    ctx.textAlign = "center";
+    ctx.fillStyle = "black";
+    ctx.fillText(`Sending captcha...`, WIDTH / 2, HEIGHT / 2);
+
+    fetch(`${API_URL}/resolve`, {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({id: id, captcha: captcha})
+    })
+    .then((data) => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            switch (data.status) {
+                case 200:
+                    ctx.fillStyle = "green";
+                    ctx.fillText(`Success!`, WIDTH / 2, HEIGHT / 2);
+                    submit.removeAttribute("disabled");
+                    break;
+                case 400:
+                    ctx.fillStyle = "red";
+                    ctx.fillText(`Incorrect captcha`, WIDTH / 2, HEIGHT / 2);
+                    setTimeout(() => {
+                        requestAnimationFrame(main);
+                    }, 2000);
+                    break;
+                default:
+                    ctx.fillStyle = "red";
+                    ctx.fillText(`An error occured`, WIDTH / 2, HEIGHT / 2);
+                    setTimeout(() => {
+                        requestAnimationFrame(main);
+                    }, 2000);
+                    break;
+            }
+        });
+
 }
 
 function verify_y() {
@@ -129,11 +169,11 @@ function check_bounds() {
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font = `${FONT_SIZE}px serif`;
-    ctx.textAlign = "left"
+    ctx.textAlign = "left";
     ctx.fillText(`${captcha}`, 0, FONT_SIZE);
     ctx.fillText(`${get_caught_captcha()}`, 0, FONT_SIZE * 2);
 
-    ctx.textAlign = "right"
+    ctx.textAlign = "right";
     ctx.fillText(`${caught_fruits.length}/${CAPTCHA_SIZE}`, WIDTH, FONT_SIZE);
 
     pad.draw();
@@ -149,23 +189,44 @@ function update() {
             requestAnimationFrame(update);
         }, 20);
     } else {
-        send_request();
+        requestAnimationFrame(complete);
     }
 }
 
+let start_captcha = false;
+
 function start() {
-    requestAnimationFrame(update);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = `${FONT_SIZE}px serif`;
+    ctx.textAlign = "center";
+    ctx.fillText(`Press V to start captcha!`, WIDTH / 2, HEIGHT / 2);
+    canvas.addEventListener("keydown", (e) => {
+        if (e.code == "KeyV") {
+            start_captcha = true;
+        }
+    });
+    if (start_captcha) {
+        requestAnimationFrame(update);
+    } else {
+        requestAnimationFrame(start);
+    }
 }
 
-async function main() {
-    const req = await fetch(`${API_URL}/challenge`);
-    const res = await req.json();
+function main() {
+    start_captcha = false;
+    spawned_fruits = [];
+    caught_fruits = [];
 
-    captcha = atob(res["captcha"]);
-    pad = new Pad();
+    fetch(`${API_URL}/challenge`).then((data) => data.json()).then((res) => {
+        id = res["id"];
+        captcha = atob(res["captcha"]);
+        pad = new Pad();
 
-    create_fruits(captcha);
-    requestAnimationFrame(start);
+        create_fruits(captcha);
+        requestAnimationFrame(start);
+    });
 }
 
-main().then(() => {});
+window.onload = () => {
+    main();
+};
