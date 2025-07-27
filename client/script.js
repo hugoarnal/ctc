@@ -27,11 +27,12 @@ const FRUIT_RADIUS = 10;
 class Fruit {
     constructor(i = 0, letter) {
         this.radius = FRUIT_RADIUS;
+        this.i = i;
         this.x = Math.floor(Math.random() * WIDTH - 10) + 10;
         this.y = (i * -20) - this.radius;
         this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
         this.letter = letter;
-        this.speed = Math.random();
+        this.speed = Math.random() + 0.25;
     }
 
     draw() {
@@ -88,6 +89,18 @@ function send_request() {
 function verify_y() {
     for (let i = 0; i < spawned_fruits.length; i++) {
         if (spawned_fruits[i].y > HEIGHT) {
+            const new_fruit = new Fruit(spawned_fruits[i].i, spawned_fruits[i].letter);
+            spawned_fruits.splice(i, 1);
+            spawned_fruits.push(new_fruit);
+        }
+    }
+}
+
+function check_bounds() {
+    for (let i = 0; i < spawned_fruits.length; i++) {
+        const fruit = spawned_fruits[i];
+        if (fruit.x >= pad.x && fruit.x <= pad.x + pad.width && fruit.y >= pad.y) {
+            caught_fruits.push(fruit);
             spawned_fruits.splice(i, 1);
         }
     }
@@ -109,6 +122,7 @@ function update() {
         spawned_fruits[i].update();
     }
     verify_y();
+    check_bounds();
     if (caught_fruits.length < CAPTCHA_SIZE) {
         setTimeout(() => {
             requestAnimationFrame(update);
