@@ -99,7 +99,7 @@ function verify_y() {
 function check_bounds() {
     for (let i = 0; i < spawned_fruits.length; i++) {
         const fruit = spawned_fruits[i];
-        if (fruit.x >= pad.x && fruit.x <= pad.x + pad.width && fruit.y >= pad.y) {
+        if (fruit.x >= pad.x && fruit.x <= pad.x + pad.width && fruit.y >= pad.y && fruit.y <= pad.y + pad.height) {
             caught_fruits.push(fruit);
             spawned_fruits.splice(i, 1);
         }
