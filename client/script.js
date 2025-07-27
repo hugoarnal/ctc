@@ -72,10 +72,10 @@ class Pad {
         this.speed = 10;
 
         canvas.addEventListener("keydown", (e) => {
-            if (e.code == "ArrowLeft") {
+            if (e.code == "ArrowLeft" && this.x - this.speed + this.width >= 0) {
                 this.x -= this.speed;
             }
-            if (e.code == "ArrowRight") {
+            if (e.code == "ArrowRight" && this.x + this.speed <= WIDTH) {
                 this.x += this.speed;
             }
         });
