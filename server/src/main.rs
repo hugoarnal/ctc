@@ -65,7 +65,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new({
         move || {
-            let cors = Cors::default().allow_any_origin().send_wildcard();
+            let cors = Cors::permissive();
 
             App::new()
                 .wrap(cors)
