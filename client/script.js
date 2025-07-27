@@ -81,6 +81,18 @@ function create_fruits(captcha) {
     }
 }
 
+function send_request() {
+    console.log("todo");
+}
+
+function verify_y() {
+    for (let i = 0; i < spawned_fruits.length; i++) {
+        if (spawned_fruits[i].y > HEIGHT) {
+            spawned_fruits.splice(i, 1);
+        }
+    }
+}
+
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font = `${FONT_SIZE}px serif`;
@@ -95,10 +107,15 @@ function update() {
     for (let i = 0; i < spawned_fruits.length; i++) {
         spawned_fruits[i].draw();
         spawned_fruits[i].update();
-    };
-    setTimeout(() => {
-        requestAnimationFrame(update);
-    }, 20);
+    }
+    verify_y();
+    if (caught_fruits.length < CAPTCHA_SIZE) {
+        setTimeout(() => {
+            requestAnimationFrame(update);
+        }, 20);
+    } else {
+        send_request();
+    }
 }
 
 async function main() {
