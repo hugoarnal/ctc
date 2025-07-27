@@ -94,6 +94,14 @@ function create_fruits(captcha) {
     }
 }
 
+function get_caught_captcha() {
+    let caught_captcha = "";
+    caught_fruits.forEach((fruit) => {
+        caught_captcha += fruit.letter;
+    });
+    return caught_captcha;
+}
+
 function send_request() {
     console.log("todo");
 }
@@ -123,6 +131,7 @@ function update() {
     ctx.font = `${FONT_SIZE}px serif`;
     ctx.textAlign = "left"
     ctx.fillText(`${captcha}`, 0, FONT_SIZE);
+    ctx.fillText(`${get_caught_captcha()}`, 0, FONT_SIZE * 2);
 
     ctx.textAlign = "right"
     ctx.fillText(`${caught_fruits.length}/${CAPTCHA_SIZE}`, WIDTH, FONT_SIZE);
@@ -144,6 +153,10 @@ function update() {
     }
 }
 
+function start() {
+    requestAnimationFrame(update);
+}
+
 async function main() {
     const req = await fetch(`${API_URL}/challenge`);
     const res = await req.json();
@@ -152,7 +165,7 @@ async function main() {
     pad = new Pad();
 
     create_fruits(captcha);
-    requestAnimationFrame(update);
+    requestAnimationFrame(start);
 }
 
 main().then(() => {});
