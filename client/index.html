@@ -8,6 +8,8 @@
         html, body {
             width: 100%;
             height: 100%;
+            margin: 0;
+            padding: 0;
         }
         main {
             width: 100%;
@@ -38,7 +40,7 @@
         <h1>Login</h1>
         <form>
             <input type="text" placeholder="Username"/>
-            <input type="password"/>
+            <input type="password" placeholder="Password"/>
             <canvas id="ctc-captcha" width="300" height="250" tabindex="1"></canvas>
             <button id="submit" disabled="true">Submit</button>
         </form>
