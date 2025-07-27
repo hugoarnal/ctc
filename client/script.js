@@ -117,7 +117,7 @@ function complete() {
             "Accept": "application/json",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({id: id, captcha: captcha})
+        body: JSON.stringify({id: id, captcha: get_caught_captcha()})
     })
     .then((data) => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
